@@ -1,0 +1,147 @@
+---
+title: "data_wrangling_i"
+author: "Courtney Chan"
+date: "September 18, 2018"
+output: html_document
+---
+
+#Lecture
+What is a tibble
+Dataframe - holds lists
+  stores information of multiple variable types - numbers and characters
+
+With tibble package - layers on top of R, with a similar data structure
+  Tibble is a version of a dataframe gives a shortened summary
+
+multiple waysto import data
+how to code missing values = 99 or . etc
+
+Readable code for data cleaning -ither ppl can understand it
+
+library(tidyverse)
+
+# Paths
+
+paths to files in your computer versus how R knows what the file is
+GitWD - working directory the folder that contains the R project
+
+Different methods of giving your computer a path
+Absolute path: full address of the file
+computer's home directory
+
+Ex. "/Users/jeffgoldsmith/Dropbox/Work/Teaching/P8105/Fall_2018/p8105.github.io/data/FAS_litters.csv"
+
+From a starting point
+
+Inserting this absolute path in your document - this will change if you give this file to someone else
+
+Versus Relative path: give directions from where you are right now
+
+Relative paths are better
+
+"./data/FAS_litters.csv"
+
+Would need the directory subfolder "data" that contains the file you need - can send the whole R project which should contain the subfolder you need?
+
+We know already we are starting from this R project - then the list is relative to this project - can send to someone else and ti would still work
+
+the "." designates wherever you are, then go to the working directory/the specific data file
+
+set(wd) is a way of setting the absolute path -so... don't do it
+
+"~" refers to home directory - will be used if you're using absolute paths
+
+
+put the Rmd file within the sub-directory folder
+can use the here::here when you dont' have your Rmd file not in your sub-directory - but this can be more complicated
+
+##import FAS csv files
+
+can insert the absolute path or the relaitve path in file =
+
+```{r}
+litters_data = read_csv(file = "./data/FAS_litters.csv")
+litters_data = janitor::clean_names(litters_data)
+```
+
+getwd() tells you what working directory you're in
+
+"C:/Users/chanc/Documents/Fall 2019/DataScience I/Lectures/Lecture 4 9-18-18/data_wrangling_i"
+
+R doesn't do well with column names with spaces - can use 
+litters_data = janitor::clean_names(litters_data)
+
+janitor is the package and the clean names is the function - so that it won't conflict with other packages that have functions of the same name - so don't have to load the whole janitor package when you have other packages already loaded
+
+Janitor::clean_names gets rid of the original names and overwrites with cleaner names, such as lower snake case
+
+```{r}
+litters_data = read_csv(file = "./data/FAS_pups.csv")
+litters_data = read_csv(file = "/Users/chanc/Documents/Fall 2019/DataScience I/Lectures/Lecture 4 9-18-18/data_wrangling_i/data/FAS_pups.csv")
+getwd()
+```
+
+Default is to print the first 10 and last 10 rows - should check each time you import so you are using the right dataset
+
+head(litters_Data)
+tail(litters_data)
+
+skimr::skim you can see mini histograms for each variable
+
+
+View() function allows you to view dataset - pulls up all the columns and rows. Make sure your data is being changed accordingly
+
+Under the read_csv, there are additional arguments
+skip = 0 whether you should skip some columns that are empty
+na: 
+col_names = TRUE, that the first row is variable names. If false, will just create its own column names using X
+
+col_types, based on values in the columns, will determine what the datatypes are by itself
+assume that column is numeric etc.
+occasionally it will be wrong
+
+```{r}
+head(litters_data)
+tail(litters_data)
+skimr::skim(litters_data)
+```
+
+
+col_types forces the column types to be what you designate
+col_types = "ciiiii""
+character and integers
+say making litter number is designated as character, minimum number of times it was repeated in the set, was 3, max times a litter number was repeated was 15 times
+
+forcing something to be another variable type might be wrong - shows up as NA
+
+can't use csv if it is a xlsx
+don't want to save a xlsx spreadsheet into a csv
+rather should use readxl package
+reads xl files especially
+
+mlb_data= readxl::read_excel(path "")
+
+can tell it to read an excel range
+mlb_subset = range = "A1:E17"
+gives smaller collection of data given the cell range specified
+
+
+how to import SAS dataset
+pulse_Data = haven::read_sas("")
+haven is the package and read_sas is the function
+
+##compare with base R
+
+pups_readr
+pups_baser
+
+readr produces tibble
+while baser users just underlying R dataframe
+
+printing baser, will print out everything
+while readr won't
+
+pups_baser$S can extract this one variable you are designating, here you say "S"
+will extract the entire column
+
+while read$S is not a valid function
